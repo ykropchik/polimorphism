@@ -53,9 +53,9 @@ unsigned int Pizza::getCountTopp() const {
     return toppings.size();
 }
 
-void Pizza::addTopping(unsigned int topp, unsigned int quantity){
+void Pizza::addTopping(unsigned int topp, unsigned int quantity) {
     toppings[topp - 1].quantity += quantity;
-    this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
+    Pizza::price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
 }
 
 class Margarita : public Pizza {
@@ -73,7 +73,7 @@ public:
         this->price = (uint) (price * ((size + 100.) / 100.));
     }
 
-    void addTopping(unsigned int topp, unsigned int quantity) {
+    void addTopping(unsigned int topp, unsigned int quantity) override {
         toppings[topp - 1].quantity += quantity;
         this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
     }
@@ -97,7 +97,7 @@ public:
         this->price = (uint) (price * ((size + 100.) / 100.));
     }
 
-    void addTopping(unsigned int topp, unsigned int quantity) {
+    void addTopping(unsigned int topp, unsigned int quantity) override {
         toppings[topp - 1].quantity += quantity;
         this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
     }
@@ -138,7 +138,7 @@ public:
         this->price = (uint) (price * ((size + 100.) / 100.));
     }
 
-    void addTopping(unsigned int topp, unsigned int quantity) {
+    void addTopping(unsigned int topp, unsigned int quantity) override {
         toppings[topp - 1].quantity += quantity;
         this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
     }
@@ -160,12 +160,8 @@ public:
         this->price = (uint) (price * ((size + 100.) / 100.));
     }
 
-    void addTopping(unsigned int topp, unsigned int quantity) {
+    void addTopping(unsigned int topp, unsigned int quantity) override {
         toppings[topp - 1].quantity += quantity;
         this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
     }
-};
-
-class Menu {
-
 };
