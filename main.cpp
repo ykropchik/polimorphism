@@ -4,120 +4,177 @@
 
 class Order {
 private:
-    std::vector<Pizza> orderList;
+    std::vector<const Pizza *> orderList;
 
 public:
-    void add(const Pizza &pizza) {
+    void add(Pizza *pizza) {
         orderList.push_back(pizza);
     }
 
-    int getCount(){
+    int getCount() {
         return orderList.size();
     }
 
-    void print(){
+    void print() {
         for (int i = 0; i < orderList.size(); ++i) {
             std::cout << i + 1 << " - ";
-            orderList[i].printName();
-            std::cout << " - ";
-            orderList[i].printTopping();
+            orderList[i]->printName();
+            std::cout << " - " << orderList[i]->getSize()
+            << " - " << orderList[i]->getPrice();
         }
+    }
+
+    void printTopp(unsigned int num){
+        orderList[num]->printTopp();
+    }
+
+    unsigned int getCountTopp(unsigned int num){
+        return orderList[num]->getCountTopp();
+    }
+
+    //TODO Не работает (this argument to member function addTopping has type const Pizza, but function is not marked  const)
+    void addTopp(unsigned int pizza, unsigned int topp, unsigned quantity){
+        orderList[pizza]->addTopping(topp, quantity);
     }
 };
 
-void createMenu(){
-    std::cout << "Главное меню:\n"
-    << "0 - Выход\n"
-    << "1 - Показать меню\n"
-    << "2 - Меню заказа пиццы\n"
-    << "4 - Показать заказ\n"
-    << "5 - Оформить заказ\n";
+void menuPrint() {
+    std::cout << "1 - Маргарита - Соус, Сыр, Базилик\n";
+    std::cout << "2 - Пепперони - Соус, Чили, Сыр, Салями\n";
+    std::cout << "3 - Капричоза - Соус, Ветчина, Грибы, Сыр\n";
+    std::cout << "4 - Фунги - Соус, Колбаса, Сладкиц перец, Грибы, Базилик, Сыр\n";
+    std::cout << "5 - Классическая - Соус, Колбаса, Ветчина, Сыр\n";
 }
 
-void orderPizza(Menu &menu, Order &order) {
-    int command;
-    std::cout << "Меню заказа пиццы: \n";
-    std::cout << "0 - Заказать пиццу \n";
-    std::cout << "1 - Добавить начинку в заказанную пиццу\n";
-    std::cout << "2 - Выйти в главное меню\n";
-    std::cin >> command;
+void createMainMenu() {
+    std::cout << "Главное меню:\n"
+              << "0 - Выход\n"
+              << "1 - Показать меню\n"
+              << "2 - Заказ пиццы\n"
+              << "3 - Показать заказ\n"
+              << "4 - Оформить заказ\n";
+}
 
-    while (command != 2) {
+void createOrderMenu(){
+    std::cout << "Меню заказа пиццы: \n";
+    std::cout << "0 - Выйти в главное меню\n";
+    std::cout << "1 - Заказать пиццу \n";
+    std::cout << "2 - Добавить начинку в заказанную пиццу\n";
+}
+
+void orderPizza(Order &order) {
+    unsigned int command(1);
+
+    while (command != 0) {
+        createOrderMenu();
+        std::cin >> command;
         switch (command) {
             case 0:
-                int number;
-                std::cout << "Введите номер пиццы из меню: ";
-                std::cin >> number;
-                if ((number > 0) && (number < (menu.getCountOfPizzas() + 1))) {
-                    order.add(menu.getPizza(command));
-                    std::cout << "Пицца добавлена в заказ\n";
-                } else {
-                    std::cout << "К сожалению вы ошиблись, у нас нет такого номера в меню :(\n";
-                }
+                createMainMenu();
                 break;
             case 1:
-                int position;
-                if (order.getCount() != 0) {
-                    order.print();
-                    std::cout << "Какой пицце вы хотите добавить начинку?\n";
-                    std::cin >> position;
-                    if ((position > 0) && (position < (order.getCount() + 1))) {
-                    }
+                menuPrint();
+                std::cout << "Какую пиццу вы хотите?\n";
+                int numPizza;
+                std::cin >> numPizza;
+                if ((numPizza < 1) || (numPizza > 5)) {
+                    std::cout << "Простите, но у нас нет такой пиццы в меню :(\n Попробуйте еще раз ^_^\n";
+                } else {
+                    unsigned int sizePizza(0);
+                    std::cout << "Какой размер?\n";
+                    while ((sizePizza != 25) && (sizePizza != 30) && (sizePizza != 35) && (sizePizza != 40)) {
+                        std::cout << "25см, 30см, 35см или 40см? (введите цифру 25, 30, 35 или 40)\n";
+                        std::cin >> sizePizza;
 
-                    break;
+                        if ((sizePizza != 25) && (sizePizza != 30) && (sizePizza != 35) && (sizePizza != 40)){
+                            std::cout << "Вы ввели не верный размер, попробуйте еще раз ^_^\n";
+                        }
+                    }
+                    switch (numPizza) {
+                        case 1:
+                            order.add(new Margarita((Sizes) sizePizza));
+                            break;
+                        case 2:
+                            order.add(new Pepperoni((Sizes) sizePizza));
+                            break;
+                        case 3:
+                            order.add(new Caprichoza((Sizes) sizePizza));
+                            break;
+                        case 4:
+                            order.add(new Phoongi((Sizes) sizePizza));
+                            break;
+                        case 5:
+                            order.add(new Classic((Sizes) sizePizza));
+                            break;
+                    }
+                    std::cout << "Пицца добавлена в ваш заказ ^_^\n";
+                }
+                break;
+            case 2:
+                if (order.getCount() == 0) {
+                    std::cout << "Извините, но вы не добавили ни одной пиццы в заказ, для начала закажите пиццу, затем добавьте начинку ^_^\n";
+                } else {
+                    std::cout << "К какой пиццу вы хотите добавить начинку?\n";
+                    order.print();
+                    unsigned int posOrderPizza(0);
+
+                    while ((posOrderPizza == 0) || (posOrderPizza > order.getCount())){
+                        std::cin >> posOrderPizza;
+                        if ((posOrderPizza == 0) || (posOrderPizza > order.getCount())){
+                            std::cout << "Извините, у вас нет такого номера в заказе, попробуйте еще раз ^_^\n";
+                        } else {
+                            order.printTopp(posOrderPizza);
+                            unsigned int posTopp(0);
+                            while ((posTopp == 0) || (posTopp > order.getCountTopp(posOrderPizza))){
+                                std::cin >> posTopp;
+                                if ((posTopp == 0) || (posTopp > order.getCount())){
+                                    std::cout << "Извините, в этой пицце нет такой начинки, попробуйте еще раз ^_^\n";
+                                } else {
+                                    unsigned int quantityTopp(0);
+                                    std::cout << "Сколько начинки вы хотите добавить?\n";
+                                    std::cin >> quantityTopp;
+                                    order.addTopp(posOrderPizza, posTopp, quantityTopp);
+                                }
+                            }
+                        }
+                    }
                 }
 
+                break;
+            default:
+                break;
         }
     }
 }
 
+
 int main() {
-    Topping cheese = Topping("Сыр", 15, 1);
-    Topping sausage = Topping("Колбаса", 25, 1);
-    Topping tomato = Topping("Томаты", 15, 1);
-    Topping basil = Topping("Базилик", 10, 1);
-    Topping sauce = Topping("Соус", 5, 1);
-    Topping ham = Topping("Ветчина", 25, 1);
-    Topping mushroom = Topping("Грибы", 20, 1);
-    Topping chili = Topping("Чили", 10, 1);
-    Topping bellPepper = Topping("Сладкий перец", 10, 1);
-    Topping salami = Topping("Салями", 35, 1);
-
-
-    Pizza margaritaM = Pizza("Маргарита (средняя)", {sauce, cheese, basil}, medium, 250);
-    Pizza margaritaL = Pizza("Маргарита (большая)", {sauce, cheese, basil}, large, 270);
-    Pizza pepperoniL = Pizza("Пепперони (большая)", {sauce, chili, cheese, salami}, large, 380);
-    Pizza pepperoniEL = Pizza("Пепперони (очень большая)", {sauce, chili, cheese, salami}, extraLarge, 450);
-    Pizza caprichozaS = Pizza("Капричоза (маленькая)", {sauce, ham, mushroom, cheese}, small, 270);
-    Pizza caprichozaM = Pizza("Капричоза (средняя)", {sauce, ham, mushroom, cheese}, medium, 270);
-    Pizza phoongiS = Pizza("Фунги (маленькая)", {sauce, sausage, bellPepper, mushroom, basil,cheese}, small, 270);
-    Pizza phoongiM = Pizza("Фунги (средняя)", {sauce, sausage, bellPepper, mushroom, basil,cheese}, medium, 350);
-    Pizza classicL = Pizza("Класическая (большая)", {sauce, sausage, ham,cheese}, large, 300);
-    Pizza classicEL = Pizza("Классическая (очень большая)", {sauce, sausage, ham,cheese}, extraLarge, 350);
-
-    Menu menu = Menu({margaritaM, margaritaL, pepperoniL, pepperoniEL, caprichozaS, caprichozaM, phoongiS, phoongiM, classicL, classicEL});
-    //menu.print();
-
-    int command = 9;
-    createMenu();
+    int command = 1;
+    createMainMenu();
     Order order;
-    while (command != 0){
+    while (command != 0) {
         std::cin >> command;
         switch (command) {
+            case 0:
+                std::cout << "До свидания, приходите еще ^_^\n";
             case 1:
-                menu.print();
+                createMainMenu();
                 break;
             case 2:
-                orderPizza(menu, order);
-                createMenu();
+                orderPizza(order);
                 break;
             case 3:
-                
-                break;
-            case 4:
                 order.print();
                 break;
-            case 5:
+            case 4:
+                if (order.getCount() == 0) {
+                    std::cout << "Извините, но вы ничего не добавили в заказ ^_^\n";
+                } else {
+                    std::cout << "Ваш заказ принят, ожидайте ^_^\n";
+                    exit(0);
+                }
+                break;
+            default:
                 break;
         }
     }

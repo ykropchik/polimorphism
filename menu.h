@@ -8,136 +8,164 @@ enum Sizes {
     small = 25, medium = 30, large = 35, extraLarge = 40
 };
 
-class Topping {
-private:
+struct Topping {
     std::string name;
-    uint32_t priseForOne;
-    uint32_t quantity;
-
-public:
-    Topping(const std::string &name, uint32_t priseForOne, uint32_t quantity) {
-        this->name = name;
-        this->priseForOne = priseForOne;
-    };
-
-    const std::string &getName() const {
-        return name;
-    }
-
-    void setName(const std::string &name) {
-        Topping::name = name;
-    }
-
-    uint32_t getPriseForOne() const {
-        return priseForOne;
-    }
-
-    void setPriseForOne(uint32_t priseForOne) {
-        Topping::priseForOne = priseForOne;
-    }
-
-    uint32_t getQuantity() const {
-        return quantity;
-    }
-
-    void addQuantity(uint32_t quantity) {
-        Topping::quantity += quantity;
-    }
-
-    void print() {
-        std::cout << name << ", ";
-    }
+    uint8_t price;
+    uint8_t quantity;
 };
 
 class Pizza {
-private:
+protected:
     std::string name;
     std::vector<Topping> toppings;
     Sizes size;
-    uint32_t prise;
+    unsigned int price = 300;
 
 public:
-    Pizza(const std::string &name, std::vector<Topping> toppings, Sizes size, uint32_t prise) {
-        this->name = name;
-        this->toppings = std::move(toppings);
+    virtual void addTopping(unsigned int topp, unsigned int quantity);
+    virtual void printName() const;
+    virtual void printTopp() const;
+    virtual Sizes getSize() const;
+    virtual unsigned int getPrice() const;
+    virtual unsigned int getCountTopp() const;
+};
+
+void Pizza::printName() const {
+    std::cout << Pizza::name;
+}
+
+void Pizza::printTopp() const {
+    for (int i = 0; i < toppings.size(); ++i) {
+        std::cout << i + 1 << " - " << toppings[i].name << "\n";
+    }
+}
+
+Sizes Pizza::getSize() const {
+    return size;
+}
+
+unsigned int Pizza::getPrice() const {
+    return price;
+}
+
+
+unsigned int Pizza::getCountTopp() const {
+    return toppings.size();
+}
+
+void Pizza::addTopping(unsigned int topp, unsigned int quantity){
+    toppings[topp - 1].quantity += quantity;
+    this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
+}
+
+class Margarita : public Pizza {
+public:
+    Margarita(Sizes size) {
+        this->name = "Маргарита";
         this->size = size;
-        this->prise = prise;
-    };
+        this->toppings = {{"Соус",    10, 1},
+                          {"Сыр",     40, 1},
+                          {"Базилик", 20, 1}};
+        for (int i = 0; i < toppings.size(); ++i) {
+            this->price += toppings[i].price;
+        }
 
-    const std::string &getName() const {
-        return name;
+        this->price = (uint) (price * ((size + 100.) / 100.));
     }
 
-    void setName(std::string name) {
-        this->name = name;
+    void addTopping(unsigned int topp, unsigned int quantity) {
+        toppings[topp - 1].quantity += quantity;
+        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
     }
 
-    uint8_t getSize() const {
-        return size;
-    }
 
-    void setSize(Sizes size) {
+};
+
+class Pepperoni : public Pizza {
+public:
+    Pepperoni(Sizes size) {
+        this->name = "Пепперони";
         this->size = size;
-    }
-
-    uint32_t getPrise() const {
-        return prise;
-    }
-
-    void setPrise(uint32_t prise) {
-        this->prise = prise;
-    }
-
-    void addTopping() {
-
-    }
-
-    void print() {
-        std::cout << name << " - ";
+        this->toppings = {{"Соус",   10, 1},
+                          {"Чили",   10, 1},
+                          {"Сыр",    40, 1},
+                          {"Салями", 60, 1}};
         for (int i = 0; i < toppings.size(); ++i) {
-            toppings[i].print();
+            this->price += toppings[i].price;
         }
-        std::cout << " - " << size << "см - " << prise;
+
+        this->price = (uint) (price * ((size + 100.) / 100.));
     }
 
-    void printName(){
-        std::cout << name << "\n";
+    void addTopping(unsigned int topp, unsigned int quantity) {
+        toppings[topp - 1].quantity += quantity;
+        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
     }
+};
 
-    void printTopping(){
+class Caprichoza : public Pizza {
+public:
+    Caprichoza(Sizes size) {
+        this->name = "Капричоза";
+        this->size = size;
+        this->toppings = {{"Соус",    10, 1},
+                          {"Ветчина", 55, 1},
+                          {"Грибы",   40, 1},
+                          {"Сыр",     40, 1}};
         for (int i = 0; i < toppings.size(); ++i) {
-            toppings[i].print();
+            this->price += toppings[i].price;
         }
+
+        this->price = (uint) (price * ((size + 100.) / 100.));
+    }
+};
+
+class Phoongi : public Pizza {
+public:
+    Phoongi(Sizes size) {
+        this->name = "Фунги";
+        this->size = size;
+        this->toppings = {{"Соус",          10, 1},
+                          {"Колбаса",       50, 1},
+                          {"Сладкий перец", 30, 1},
+                          {"Грибы",         40, 1},
+                          {"Базилик",       20, 1},
+                          {"Сыр",           40, 1}};
+        for (int i = 0; i < toppings.size(); ++i) {
+            this->price += toppings[i].price;
+        }
+
+        this->price = (uint) (price * ((size + 100.) / 100.));
+    }
+
+    void addTopping(unsigned int topp, unsigned int quantity) {
+        toppings[topp - 1].quantity += quantity;
+        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
+    }
+};
+
+class Classic : public Pizza {
+public:
+    Classic(Sizes size) {
+        this->name = "Классическая";
+        this->size = size;
+        this->toppings = {{"Соус",    10, 1},
+                          {"Колбаса", 50, 1},
+                          {"Ветчина", 55, 1},
+                          {"Сыр",     40, 1}};
+        for (int i = 0; i < toppings.size(); ++i) {
+            this->price += toppings[i].price;
+        }
+
+        this->price = (uint) (price * ((size + 100.) / 100.));
+    }
+
+    void addTopping(unsigned int topp, unsigned int quantity) {
+        toppings[topp - 1].quantity += quantity;
+        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
     }
 };
 
 class Menu {
-private:
-    std::vector<Pizza> pizzaList;
 
-public:
-    Menu(std::vector<Pizza> pizzaList) {
-        this->pizzaList = pizzaList;
-    };
-
-    void addPizza(Pizza pizza) {
-        pizzaList.push_back(pizza);
-    }
-
-    int getCountOfPizzas(){
-        return pizzaList.size();
-    }
-
-    Pizza getPizza(int number){
-        return pizzaList[number - 1];
-    }
-
-    void print() {
-        for (int i = 0; i < pizzaList.size(); ++i) {
-            std::cout << i + 1 << " - ";
-            pizzaList[i].print();
-            std::cout << std::endl;
-        }
-
-    }
 };
