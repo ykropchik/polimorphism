@@ -61,9 +61,9 @@ void createOrderMenu() {
 }
 
 void orderPizza(Order &order) {
-    unsigned int command(1);
+    unsigned int command = 0;
 
-    while (command != 0) {
+    do {
         createOrderMenu();
         std::cin >> command;
         switch (command) {
@@ -117,14 +117,14 @@ void orderPizza(Order &order) {
                     order.print();
                     unsigned int posOrderPizza(0);
 
-                    while ((posOrderPizza == 0) || (posOrderPizza > order.getCount())) {
+                    do {
                         std::cin >> posOrderPizza;
                         if ((posOrderPizza == 0) || (posOrderPizza > order.getCount())) {
                             std::cout << "Извините, у вас нет такого номера в заказе, попробуйте еще раз ^_^\n";
                         } else {
                             order.printTopp(posOrderPizza - 1);
                             unsigned int posTopp(0);
-                            while ((posTopp == 0) || (posTopp > order.getCountTopp(posOrderPizza - 1))) {
+                            do {
                                 std::cin >> posTopp;
                                 if ((posTopp == 0) || (posTopp > order.getCountTopp(posOrderPizza - 1))) {
                                     std::cout << "Извините, в этой пицце нет такой начинки, попробуйте еще раз ^_^\n";
@@ -134,24 +134,24 @@ void orderPizza(Order &order) {
                                     std::cin >> quantityTopp;
                                     order.addTopp(posOrderPizza - 1, posTopp - 1, quantityTopp);
                                 }
-                            }
+                            } while ((posTopp == 0) || (posTopp > order.getCountTopp(posOrderPizza - 1)));
                         }
-                    }
+                    } while ((posOrderPizza == 0) || (posOrderPizza > order.getCount()));
                 }
 
                 break;
             default:
                 break;
         }
-    }
+    } while (command != 0);
 }
 
 
 int main() {
-    int command = 1;
+    int command = 0;
     createMainMenu();
     Order order;
-    while (command != 0) {
+    do {
         std::cin >> command;
         switch (command) {
             case 0:
@@ -173,7 +173,7 @@ int main() {
             default:
                 break;
         }
-    }
+    } while (command != 0);
 
     return 0;
 }
