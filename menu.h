@@ -54,8 +54,8 @@ unsigned int Pizza::getCountTopp() const {
 }
 
 void Pizza::addTopping(unsigned int topp, unsigned int quantity) {
-    toppings[topp - 1].quantity += quantity;
-    Pizza::price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
+    toppings[topp].quantity += quantity;
+    Pizza::price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp].price);
 }
 
 class Margarita : public Pizza {
@@ -74,8 +74,8 @@ public:
     }
 
     void addTopping(unsigned int topp, unsigned int quantity) override {
-        toppings[topp - 1].quantity += quantity;
-        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
+        toppings[topp].quantity += quantity;
+        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp].price);
     }
 
 
@@ -98,8 +98,8 @@ public:
     }
 
     void addTopping(unsigned int topp, unsigned int quantity) override {
-        toppings[topp - 1].quantity += quantity;
-        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
+        toppings[topp].quantity += quantity;
+        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp].price);
     }
 };
 
@@ -139,8 +139,8 @@ public:
     }
 
     void addTopping(unsigned int topp, unsigned int quantity) override {
-        toppings[topp - 1].quantity += quantity;
-        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
+        toppings[topp].quantity += quantity;
+        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp].price);
     }
 };
 
@@ -161,7 +161,7 @@ public:
     }
 
     void addTopping(unsigned int topp, unsigned int quantity) override {
-        toppings[topp - 1].quantity += quantity;
-        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp - 1].price);
+        toppings[topp].quantity += quantity;
+        this->price += (uint) (((size + 100.) / 100.) * quantity * toppings[topp].price);
     }
 };
